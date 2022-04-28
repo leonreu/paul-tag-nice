@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Snake</title>
+  <style>
+    body { padding-top: 80px; color: white; background-color: darkgray; }
+  </style>
+</head>
+<body>
+
+  <div style="display: flex; justify-content: center;" class="container">
+    <div style="width: 200px;" class="jumbotron">
+      <h1>Pauly1407
+        
+      </h1>
+      <button onclick="paulysFunction()">party mode (stackbar) :)</button>
+      <button onclick="start()">start</button>
+      
+      <div style="padding-top: 3em; padding-bottom: 2em; margin-left: 8em; height: 2em;">
+              <div id="timer" style="font-size: 3em; margin-left: -500px; color: black">timer</div>
+      <div id="score" style="font-size: 4em;  margin-left: 500px; color: black;">score</div>
+    </div>
+    <div style="
+         margin: 0;
+         position: absolute;
+         top: 50%;
+         -ms-transform: translateY(-50%);
+         transform: translateY(-50%);
+      ">
+      <canvas id="paulysCanvas" width="1500" height="500" style="border: 5px solid black; margin-left: -700px;"></canvas>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var colors = ["red", "green", "blue", "white", "orange", "turquoise", "aqua", "purple", "lightblue"];
+    function paulysFunction() {
+        //var rnd = Math.floor(Math.random() * colors.length);
+        //document.getElementsByTagName("body")[0].style.backgroundColor = colors[rnd];
+        start();
+        partyMode();
+    }
+    function draw(png, x, y) {
+        var ctx = document.getElementById('paulysCanvas').getContext('2d');
+        var img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, x*32, y*32);
+            
+        };
+        img.src = png + '.png';
+    }
+    var partyMode = () => setInterval(() => {
+        var rnd = Math.floor(Math.random() * colors.length);
+        document.getElementsByTagName("body")[0].style.backgroundColor = colors[rnd];
+   }, 100)
+
+    var canvas = document.getElementById('paulysCanvas')
+    var canvasX = Math.floor(canvas.width / 32);
+    var canvasY = Math.floor(canvas.height / 32);
+    var headX = 5;
+    var headY = 4;
+    var pizzaX, pizzaY;
+    var pizzaScore = 0;
+    var timer = document.getElementById('timer');
+    var score = document.getElementById('score');
+    var counter = 30;
+    var alive = false;
+
+    draw('head_up', headX, headY);
+    
+
+    document.onkeydown = checkKey;
+
+    function checkKey(e) {
+        if (!alive) {
+            return;
+        }
+
+        e = e || window.event;
+
+        // W
+        if (e.keyCode == '87') {
+
+            moveHead('up');
+    
+            console.log("up");
+        }
+
+        // D
+        else if (e.keyCode == '68') {
+            moveHead('right');
+            console.log("right");
+        }
+
+        // A
+        else if (e.keyCode == '65') {
+            console.log("left");
+            moveHead('left');
+            
+        }
+
+        // S
+        else if (e.keyCode == '83') {
+            console.log("down");
+            moveHead('down')
+        }
+
+    }
+    spawnPizza();
+
+    function moveHead(richtung) {
+        // canvas aufräumen
+        //var canvas = document.getElementById('paulysCanvas')
+        var ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+       
+        if (richtung == "up") {
+            if (headY > 0) {
+                headY = headY - 1;
+            }
+            draw('head_up', headX, headY);
+        }else if(richtung=='right'){
+            if (headX < canvasX) {
+                headX = headX +1;  
+            }
+          draw('head_right', headX, headY);
+        
+        }else if(richtung=='left'){
+            if (headX > 0) {
+                headX = headX -1;  
+            }
+          draw('head_left', headX, headY);
+          
+        }else if (richtung == "down") {
+            if (headY < canvasY) {
+                headY = headY +1;
+            }
+            draw('head_down', headX, headY);
+        }
+        draw('pizza', pizzaX, pizzaY);
+        if (pizzaX == headX && pizzaY == headY) {
+            pizzaScore++;
+            score.innerText = pizzaScore;
+            spawnPizza();
+        }
+        
+    }
+
+
+    function spawnPizza() {
+        pizzaX = Math.floor(Math.random() * canvasX);
+        pizzaY = Math.floor(Math.random() * canvasY);
+    }
+
+    function start() {
+        alive = true;
+        counter = 30;
+        pizzaScore = 0;
+    }
+
+   countdown = setInterval(() => {
+       if (!alive) return;
+       if (counter <= 0) {
+           alive = false;
+        document.getElementsByTagName("body")[0].style.backgroundColor = "red";
+        return;
+       }
+       counter--;
+        timer.innerText = counter;
+   }, 1000)
+  </script>
+    
+</body>
+</html>
